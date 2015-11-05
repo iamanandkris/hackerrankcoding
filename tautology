@@ -1,0 +1,25 @@
+object listetsest {
+  println("Welcome to the Scala worksheet")
+  val str = "(a & (!b | b))"
+  val distStr = str.distinct
+  val k = distStr.foldLeft(List[Char]())((a,b)=>{
+  	if (b.isLetter) a:::List(b)
+  	else a
+  })
+
+  val p = (1 to k.length).toList
+  val m = List.fill(k.length)(false)
+  val roots = p.map { x => p.map { y => {if (x<y) false else true} } }
+  val allTrueFalses = m::roots.flatMap { x => x.permutations }
+  allTrueFalses.size
+  val zippedTrueFalse = allTrueFalses.map { x => {
+  	val zipped = x zip k
+  	zipped
+  }}
+  
+  val allPossibleTrueAndFalseValues = zippedTrueFalse.map(f => {
+  	f.foldLeft(str)((a,b) => {
+  		a.replace(b._2.toString, b._1.toString())
+  	})
+  })
+}
