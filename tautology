@@ -1,6 +1,6 @@
 object listetsest {
   println("Welcome to the Scala worksheet")
-  val str = "((((((((((a&(!b|b))|(!a&(!b|b)))|c)|d)|e)|f)|g)|h)|i)|j)".replaceAll(" ", "")
+  val str = "((((a&(!b|b))|(!a&(!b|b))) & ((c&(!d|d))|(!c&(!d|d)))) & (((e&(!f|f))|(!e&(!j|j))) & ((g&(!h|h))&(!g&(!i|i)))))".replaceAll(" ", "")
   val distStr = str.distinct
   val k = distStr.foldLeft(List[Char]())((a, b) => {
     if (b.isLetter) a ::: List(b)
@@ -9,9 +9,10 @@ object listetsest {
 
   val p = (1 to k.length).toList
   val m = List.fill(k.length)(0)
-  val roots = p.map { x => p.map { y => { if (x < y) 0 else 1 } } }
-  val allTrueFalses = m :: roots.flatMap { x => x.permutations }
-  allTrueFalses.size
+  val roots = (0::p).map { x => p.map { y => { if (x < y) 0 else 1 } } }.view
+  //roots.size
+  val allTrueFalses = roots.flatMap { x => x.permutations }
+  
   val zippedTrueFalse = allTrueFalses.map { x =>
     {
       val zipped = x zip k
@@ -25,9 +26,10 @@ object listetsest {
     })
   })
   val reductionSequence = List(("!0", "1"), ("!1", "0"), ("(1&0)", "0"), ("(0&1)", "0"), ("(0&0)", "0"), ("(1&1)", "1"), ("(1|0)", "1"), ("(0|1)", "1"), ("(1|1)", "1"), ("(0|0)", "0"))
-  allPossibleTrueAndFalseValues.size
+  
 
   def reduceIt(inputSeq: String): String = {
+  	println(inputSeq)
     if (inputSeq.length() == 1) inputSeq
     else {
       val kk = reductionSequence.foldLeft(inputSeq)((a, b) => {
@@ -38,21 +40,13 @@ object listetsest {
     }
   }
 
-  def calcFinalRes(lstStr: List[String]): Boolean = {
-    def intermediate(lstStrTemp: List[String], accum: Boolean): Boolean = {
-      lstStrTemp match {
-        case x :: y => {
-          if (accum && (reduceIt(x) == "1")) {
-            intermediate(y, true)
-          } else {
-            false
-          }
-        }
-        case Nil => accum
-      }
-
-    }
-    intermediate(lstStr, true)
+  def calcFinalRes(lstStr:  scala.collection.SeqView[String,Seq[_]] ): Boolean = {
+    lstStr.collectFirst({
+    	case pp if (reduceIt(pp)=="0") => {
+    		return false
+    	}
+    })
+    return true
   }
 
   calcFinalRes(allPossibleTrueAndFalseValues)
