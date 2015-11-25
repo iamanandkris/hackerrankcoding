@@ -3,4 +3,6 @@
 2. What is Self type annotations
 3. Different patterns in Scala/FP
 4. What is Algebraic Data Types and Type Classes- How does it help in de-coupling //
-5. 
+5. HOw is queue implemented using two immutable lists: http://stackoverflow.com/questions/31479019/queue-in-scala-using-list-in-scala
+6. What is covarience and contravarience
+
