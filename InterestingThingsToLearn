@@ -1,0 +1,8 @@
+1. How yml files are used in build and deployment
+2. Team City
+    a. How to create a build job
+    b. How to create a deploy job
+    c. How to add code coverage
+    d. How to add different steps in the job
+    e. How to do name mangling
+3. Importance of manifest file in jar. How to change the contents of manifest file so that the jar uses new/different dependent jars?
