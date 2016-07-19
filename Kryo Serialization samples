@@ -1,0 +1,55 @@
+["com.romix.akka.serialization.kryo.KryoSerializationExtension$"]
+serializers {  
+    java = "akka.serialization.JavaSerializer"  
+    # Define kryo serializer   
+    kryo = "com.romix.akka.serialization.kryo.KryoSerializer"  
+}    
+serialization-bindings {
+	
+}
+kryo  {
+	type = "graph"  
+	idstrategy = "default"  
+	serializer-pool-size = 16
+	buffer-size = 4096 
+	max-buffer-size = -1
+	use-manifests = false
+	implicit-registration-logging = true
+	kryo-trace = true
+	serialize-messages = on
+	mappings {}  
+	classes = []  
+}
+-----------------------------------------------------------------------------
+akka {
+  extensions = ["com.romix.akka.serialization.kryo.KryoSerializationExtension$"]
+
+  actor {
+    kryo {
+      type = "graph"
+      idstrategy = "incremental"
+      buffer-size = 4096
+      max-buffer-size = -1
+      use-manifest = false
+      implicit-registration-logging = true
+      kryo-trace = true
+
+      mappings {
+        "hu.jonas.cluster.ClusterMessage" = 32,
+        "hu.jonas.cluster.Status" = 33,
+        "hu.jonas.cluster.StatusReply" = 34
+      }
+    }
+
+    serialize-messages = on
+    serializers {
+      #java = "akka.serialization.JavaSerializer"
+      kryo = "com.romix.akka.serialization.kryo.KryoSerializer"
+    }
+    serialization-bindings {
+      "hu.jonas.cluster.ClusterMessage" = kryo
+      "hu.jonas.cluster.Status" = kryo
+      "hu.jonas.cluster.StatusReply" = kryo
+    }
+  }
+}
