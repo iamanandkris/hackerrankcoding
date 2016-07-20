@@ -98,6 +98,8 @@ ________________________________________________________________________________
 
 Whats a Monad
 
+Monad Laws - http://devth.com/2015/monad-laws-in-scala/
+
 Category Theory
 
 trait Monoid[T] { 				
