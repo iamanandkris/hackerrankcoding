@@ -1,0 +1,50 @@
+Whats a Monad
+
+Category Theory
+
+trait Monoid[T] { 				
+	def append(a1: T, a2: T): T
+    def zero: T
+}
+
+trait Functor[F[_]] {
+    def map[A,B](f: A => B): F[B]
+	def append(a1: T, a2: T): T
+    def zero: T
+}
+
+	1. Identity: Functor.map(Identity) == Functor
+	2. Composition: Functor.map(f).map(g) == Functor.map(f andThen g)
+
+trait Monad[F[_]] extends Applicative[F] {
+    def flatMap[A,B](f: A => F[B]): F[B]
+}
+-------------------------------------------------------------------------------------------------
+Suppose we have these a behaviour/trait to describe a Set of values in the universe 
+(ex: given an integer (a) and send   it over to network(represented by M) we get M[a] - Future, 
+  or given an integer (a) and append it to a collection List (represented by M) we get M[a] List)
+  
+ trait AppendTrait [List[A]] {
+  def append(l1: List[A], l2: List[A]) = l1 ++ l2
+  def zero = Nil
+  def map[A,B](f: A => B): List[B]
+  //Monadic functionality
+  def flatMap[A,B](f: A => F[B]): F[B]
+ }
+  
+p: a -> M[a]
+q: a -> M[a]
+
+here M could be any side effect
+ex: Future  // latency
+	  Option	// NPE 
+	  Try		  // Exception
+	  List	  // General collections
+	
+then
+
+bind (flatMap) functionality (monad) helps to compose p and q to get another trait/behaviour h
+
+        |--------------------| 
+h: a -> | M[a] >>= a -> M[a] |
+	      |____________________| 
