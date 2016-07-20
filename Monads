@@ -80,11 +80,21 @@ Note that here the type has to line up properly for the functions f and g. [if f
                     b. The Monoid should contain a special member such that num # special member = num. Here that special member is 12. i.e. num # 12 = num
                     c. It does not need to necessarily satisfy that - num1 # num2 == num2 # num1 [in the case of clock x # y == y # x but this is not necessary to be a Monoid. Ex: Sine (Cosine x) != Cosine ( Sine x)]
     
-                List[T]							        Option[T]						     Try[T]							        Clock
-  x:A		    Any member of the Type T or Nil			Any one member of the Type Tor None	 "Any member of the Type Tor Exception"	1 to12
-  f: a:A -> b:A	Any valid function to List::map()	    Any valid function to Option::map()	  Any valid function to Try::map()	    Any function that takes any number of arguments (each one between 1-12) and return
-  Rule		    Rule is coded inside map() method 		Rule is coded inside map() method	  Rule is coded inside map() method	    # : (x,y) => (x + y)%12
-  Meta Rule	    (lst map f) map g 2. x::Nil = x															                    1. (x # y) # z == x # (y # z) 2. (x # 12) = (12 # x) = x"
+__________________________________________________________________________________________________________________________________________________________________
+ MONOID Rules |  CLOCK                  |    LIST[T]                            |             OPTION[T]                   |		TRY[T]                            |
+______________|_________________________|_______________________________________|_________________________________________|_______________________________________|
+x:A			  | 1 to12				    |Any member of the Type T or Nil		| Any one member of the Type Tor None	  |Any member of the Type T orException   |
+______________|_________________________|_______________________________________|_________________________________________|_______________________________________|
+f: a:A -> b:A |	f: a(1-12) -> b(1-12)   |Valid function to List::map()		    | Valid function to Option::map()		  |Valid function toTry::map()            |
+______________|_________________________|_______________________________________|_________________________________________|_______________________________________|
+Rule		  |	# : (x,y) => (x + y)%12 |lst.map(f) //map function has the rule | opt.map(f)  //map function has the rule |tri.map(f)  //map function has the rule|
+______________|_________________________|_______________________________________|_________________________________________|_______________________________________|
+Meta Rule     |1. x#y)#z = x#(y#z)      | 1. lst.map(f).map(g) ==               | 1. opt.map(f).map(g) ==                 | 1. tri.map(f).map(g) ==               |
+              |                         |        lst.map(x => f(x).map(g))      |               opt.map(x => f(x).map(g)) |             tri.map(x => f(x).map(g)  |
+              |2. x#12 = 12#x = x       | 2. lst.map(List(_)) = lst             | 2. opt.map(Option(_)) = opt             | 2. tri.map(Try(_)) = tri              |
+______________|_________________________|_______________________________________|_________________________________________|_______________________________________|
+
+
 
 Whats a Monad
 
