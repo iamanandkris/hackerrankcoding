@@ -48,3 +48,11 @@ bind (flatMap) functionality (monad) helps to compose p and q to get another tra
         |--------------------| 
 h: a -> | M[a] >>= a -> M[a] |
         |____________________| 
+--------------------------------------------------------------------------------------
+Monoid comparison with Clock and Scala Types
+		List[T]							Option[T]						Try[T]							Clock
+x:a		Any member of the Type T or Nil				Any one member of the Type Tor None			"Any member of the Type Tor Exception"			1 to12
+f: a -> b	Any function that could be suplied to List::map()	Any function that could be suplied to Option::map()	Any function that could be suplied to Try::map()	Any function that takes any number of arguments (each one between 1-12) and return
+Rule		:: <- append 						Some(t) or None						Success(t) or Failure(e:Exception)			# : (x,y) => (x + y)%12
+Meta Rule	1. (x :: y) :: z == x :: (y :: z) 2. x :: Nil = x															"1. (x # y) # z == x # (y # z) 2. (x # 12) = (12 # x) = x"
+
