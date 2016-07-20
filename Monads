@@ -47,4 +47,4 @@ bind (flatMap) functionality (monad) helps to compose p and q to get another tra
 
         |--------------------| 
 h: a -> | M[a] >>= a -> M[a] |
-	      |____________________| 
+        |____________________| 
