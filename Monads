@@ -1,3 +1,91 @@
+Functional Programming
+Programming with functions. 
+ex: int x;
+    static int f(int x){
+        double y = Math.fun(x)
+        return y;
+    }
+ Here x is the data and f is the function in imperative programming. In functional programming, we say, not only x, but f is also ordinary just like x.
+ In functional programming code is data too.
+ In functional programming you can start tossing function around as easily as we toss data/variables around in imperative programming
+ In imperative programming we consider data and code to be in different universe. But in functional programming we consider data and functions part of same universe
+ Ex: Theoretically any function could be replaced with a DB table lookup. Sine table, Cosine Table. The act of looking up is called function
+
+Immutability
+    Pure functional programming, does not allow any state. Once you create data, thats it, its constant ever and ever.
+
+Journey to understand Monad
+
+1. Functions
+2. Monoids
+3. Functions (again)
+4. Monad.
+
+1. Functions
+
+How to represent type of a data (General way here a is the general type)
+    x:a [From here on, instead of int x, we will say x:Int. Its because in mathematics we say  --- x E Ints (x is a member of set of Ints)    ]
+
+How to represent type of a function (Generic function)
+    f: a -> a [now on instead of writing a f<a>(a x) we will use this notation]
+
+2. Monoids
+
+We have
+x:a
+f:a -> a
+g:a -> a
+
+now I want to combine f and g How?
+
+Imperative way - f(g(a)) or g(f(a))
+
+Functional way
+    Functional programming we like to write function application/function call like this - f a or g a instead of f(a) or g(a)
+    so  f(g(a)) becomes f(g a)
+    and g(f(a)) becomes g(f a)
+
+    Why we need the outer brackets and why dont we just say f g a or g f a ?
+
+        Its because of the currying feature:
+            If we chain a bunch of functions, it associate to left    
+            f g h = (f g) h
+        
+        So if we want to call g first and then f, we will have to write f(g(a)) to be  f (g a)
+   
+    We can use a notation o to represent combining of f and g and mention it as 
+        (f o G)
+    Here (f o G) could be considered as a new function (combined f and g) which has a property thats
+        (f o G) a == f(g a) 
+        and now we can call (f o G) to be h: a -> a, the new combined function. 
+This is the essence of a Monoid. We can take two things of the same kind and generate another thing of the same kind by combining them. This is the building block of complex combinations. 
+You start building simple things and combine them as and when required to build complex things.
+Note that here the type has to line up properly for the functions f and g. [if f: a->b, g:b->c the f o g : a -> c]
+    So now we have:
+    x:a
+    f: a->a
+    g: a->a
+    h: a->a
+    Significance:
+        This way of programming with combining functionality is the way to deal with complexity. Its a creative task to come up with basic building blocks and the combining functionality (o) to combine the building blocks to come up with complex stuffs.
+        So its important to make sure that the types line up properly and design carefully how the combining operator (o) should work.
+        Note: Here in the above case [(f o g) a], o was designed in such a way that it takes a and feed it to g and the result is fed in to f. 
+    
+    Definition Monoid  - It is a Set/Collection of things, with a rule to combine the things and that rule obey some rules.
+    Example Clock:
+            1. In a clock the numbers (on the clock) form a Monoid (1 - 12)
+            2. Here the rule to combine the numbers of clock is - Rule ==> (num1  + num2) % 12  // Add the numbers and casst out 12 can be represented with a symbol # so Rule ==> num1 # num2
+            3. Here the Rule should obey the following rules:
+                    a. num1 # (num2 # num3) == (num1 # num2) # num3 //Associativity
+                    b. The Monoid should contain a special member such that num # special member = num. Here that special member is 12. i.e. num # 12 = num
+                    c. It does not need to necessarily satisfy that - num1 # num2 == num2 # num1 [in the case of clock x # y == y # x but this is not necessary to be a Monoid. Ex: Sine (Cosine x) != Cosine ( Sine x)]
+    
+                List[T]							        Option[T]						     Try[T]							        Clock
+  x:A		    Any member of the Type T or Nil			Any one member of the Type Tor None	 "Any member of the Type Tor Exception"	1 to12
+  f: a:A -> b:A	Any valid function to List::map()	    Any valid function to Option::map()	  Any valid function to Try::map()	    Any function that takes any number of arguments (each one between 1-12) and return
+  Rule		    Rule is coded inside map() method 		Rule is coded inside map() method	  Rule is coded inside map() method	    # : (x,y) => (x + y)%12
+  Meta Rule	    (lst map f) map g 2. x::Nil = x															                    1. (x # y) # z == x # (y # z) 2. (x # 12) = (12 # x) = x"
+
 Whats a Monad
 
 Category Theory
@@ -48,11 +136,3 @@ bind (flatMap) functionality (monad) helps to compose p and q to get another tra
         |--------------------| 
 h: a -> | M[a] >>= a -> M[a] |
         |____________________| 
---------------------------------------------------------------------------------------
-Monoid comparison with Clock and Scala Types
-		List[T]							Option[T]						Try[T]							Clock
-x:a		Any member of the Type T or Nil				Any one member of the Type Tor None			"Any member of the Type Tor Exception"			1 to12
-f: a -> b	Any function that could be suplied to List::map()	Any function that could be suplied to Option::map()	Any function that could be suplied to Try::map()	Any function that takes any number of arguments (each one between 1-12) and return
-Rule		:: <- append 						Some(t) or None						Success(t) or Failure(e:Exception)			# : (x,y) => (x + y)%12
-Meta Rule	1. (x :: y) :: z == x :: (y :: z) 2. x :: Nil = x															"1. (x # y) # z == x # (y # z) 2. (x # 12) = (12 # x) = x"
-
