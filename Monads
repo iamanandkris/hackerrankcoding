@@ -81,7 +81,7 @@ Note that here the type has to line up properly for the functions f and g. [if f
                     c. It does not need to necessarily satisfy that - num1 # num2 == num2 # num1 [in the case of clock x # y == y # x but this is not necessary to be a Monoid. Ex: Sine (Cosine x) != Cosine ( Sine x)]
     
 ___________________________________________________________________________________________________________________________________________________________________
-| MONOID Rules |  CLOCK                  |    LIST[T]                            |             OPTION[T]                   |		TRY[T]                     |        |
+| MONOID Rules |  CLOCK                  |    LIST[T]                            |             OPTION[T]                   |		TRY[T]                     |    
 |______________|_________________________|_______________________________________|_________________________________________|_______________________________________|
 |x:A	       | 1 to12	                 | Any member of the Type T or Nil	 | Any one member of the Type Tor None	   | Any member of the Type T orException  |
 |______________|_________________________|_______________________________________|_________________________________________|_______________________________________|
@@ -99,6 +99,57 @@ ________________________________________________________________________________
 Whats a Monad
 
 Monad Laws - http://devth.com/2015/monad-laws-in-scala/
+Its almost like Monoid with slight twist.
+
+x: A
+f: a:A -> b:M[A]
+g: a:A -> c:M[A]
+h: a:A -> d:M[A]
+
+We are leaving the realm of functions that take an A and return an A to functions that take an A and returns a Transform on A (M[A]).
+What it means that every function (f,g and h) that lives in the compositional world will take an A and return A with some extra data applied to A. M is a functionality that lives outside the world of f, g or h but is applied to f, g and h similarly.
+Here M[A] could be any functionality. It could call a DB, it could be an IO, it could be communicating over the network (ex: Exception, Futures, IO, Continuation, etc. ), but its similarly applied in functions f, g and h.
+So here we can represent arbitrary side-effects using M. So we have control on how to manage composition of functions that has similar side effects.
+So basically abstracting the side effects in M, we are hiding it from f, g and h. 
+
+How to compose these functions?
+
+suppose we have a lambda expression/ function that takes a:A and returns the result of f(a:A)
+
+a:A => f(a):M[A] // a lambda that takes a and returns f(a)
+b:A => g(b):M[A]
+
+Now  what if we have (similar to map() in case of Monoid) a composition function for the above kind of functions [flatmap/bind/>>=] to combine them?
+
+a:A => f(a):M[A] >>= b:A => g(b):M[A]
+       
+So a lambda that takes b and returns an g(b) is nothing but the function g itself. 
+We can not write the same for left hand side of >>= (i.e. - a:A => f(a):M[A]). 
+Its because if  we do so, we will loss the symmetry [A -> M[A]] of the combined function.
+
+(f >>= g):M[A]) is not symmetrical where as if we write it like this:
+
+       |------------------|       // To preserve the symmetry, here in the right hand side, we call f(a) and get a value (of type M[A]) back and SHOVE it in to g. 
+a:A => | {f(a):M[A] >>= g}|:M[A]  //So its up to the implementation of the function >>= (or flatMap, of bind) to decide how the SHOVE has to happen.
+       |__________________|       //In Scala List, the flatMap opens up the result of f(a), which is of type List[A] 
+                                   //and work on each elements of the list to apply g and combine each output (of type List[A])  
+                                   // in such a way that at the end we again get a List back.
+It becomes symmetrical to A -> M[A] function signature. so the above composition can be considered as another function like f, g and and h
+   |--                                --|             
+   |       |------------------|         |
+i: |a:A -> | {f(a):M[A] >>= g}| :M[A]   |
+   |       |__________________|         |
+   |__`                               __| 
+                                   
+so now we have 
+
+f: a:A -> b   :M[A]
+g: a:A -> c   :M[A]
+h: a:A -> d   :M[A] and 
+i: a:A -> >>= :M[A]
+
+So if we notice carefully, we can see that the functions are almost like that of Monoid, so the functions live in the Monoidal world and the Data (M[A]) lives in Monad world.
+
 
 Category Theory
 
