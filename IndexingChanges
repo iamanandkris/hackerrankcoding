@@ -1,0 +1,17 @@
+Directory Walk Function:
+
+  def walk(root: File): Stream[File] = {
+    if (root.isDirectory)
+      root.listFiles.toStream.flatMap(walk(_))
+    else root #:: Stream.empty
+  }
+  
+Backend Indexer (create it as a companion so that the actor messages can be kept in the object) - same as IndexMaster 
+ 
+val props = properties(new File("conf/indexer.properties")) // change it to load config
+val server0 = List(props("serverName"),props("indexName")).foldRight("")(_ + "/" + _) //http://localhost:9200/enron/
+val server1 = List(props("serverName"),props("indexName"),props("mappingName")).foldRight("")(_ + "/" + _)  //http://localhost:9200/enron/mails/
+
+val system = ActorSystem("ElasticSearchIndexer")  //use config and classloader
+val reaper = system.actorOf(Props[Reaper], name = "reaper") //Think about creating a supervisor hierarchy for this one and the below one
+val master = system.actorOf(Props(new IndexMaster(props, reaper)), name = "master")
