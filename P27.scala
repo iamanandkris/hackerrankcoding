@@ -10,12 +10,12 @@ def NCK(list:List[Int],k:Int):List[List[Int]]={
 	
 	val listOfItem = List(1,2,3,4)
 
-	def disjoint(list:List[Int], setLength:List[Int]):List[List[List[Int]]]={
-		if (list.length != setLength.sum) Nil
+	def disjoint(list:List[Int], setLength:List[Int]):scala.collection.immutable.Set[scala.collection.immutable.Set[List[Int]]]={
+		if (list.length != setLength.sum) Set(Set(Nil))
 		else{
-			val t = setLength.foldLeft(List((List[List[Int]](), list))){(a,b) => {
+			val t = setLength.foldLeft(scala.collection.immutable.Set((scala.collection.immutable.Set[List[Int]](), list))){(a,b) => {
 				a.flatMap(f => {
-					NCK(f._2,b).map (y => (y :: f._1, list diff y))
+					NCK(f._2,b).map (y => (Set(y) ++ f._1, f._2 diff y))
 				})
 			 }
 			}
@@ -23,4 +23,4 @@ def NCK(list:List[Int],k:Int):List[List[Int]]={
 		}
 	}
 	
-	disjoint(listOfItem, List(2,2))
+	disjoint(listOfItem, List(2,1,1))
