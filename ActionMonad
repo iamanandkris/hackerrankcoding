@@ -61,11 +61,24 @@ object test extends App{
   //val f = k.map(x=>x)
   //println(f)
 
-  val fff= k.flatMap(x => x match{
+  def f(oc:StringOutcome):FAction[_]={
+    oc match{
+      case StringOutcome("Marek") => IntAction(1)
+      case StringOutcome("Anand") => IntAction(2)
+      case StringOutcome("Nathan") => IntAction(3)
+    }
+  }
+
+ /* val fff= k.flatMap(x => x match{
     case StringOutcome("Marek") => IntAction(1).map(x=>x)
     case StringOutcome("Anand") => IntAction(2).map(x=>x)
     case StringOutcome("Nathan") => IntAction(3).map(x=>x)
-  } )
+  } )*/
+
+  val fff = for {
+    one <- k
+    two <- f(one)
+  }yield(two)
 
   println(fff)
 }
